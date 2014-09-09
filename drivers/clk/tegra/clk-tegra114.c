@@ -1238,6 +1238,11 @@ static __init void tegra114_periph_clk_init(void __iomem *clk_base,
 		clks[data->clk_id] = clk;
 	}
 
+	clk = tegra_clk_register_periph_gate("mipi-cal", "clk_m", 0, clk_base,
+				0, TEGRA114_CLK_MIPI_CAL,
+				periph_clk_enb_refcnt);
+	clks[TEGRA114_CLK_MIPI_CAL] = clk;
+
 	tegra_periph_clk_init(clk_base, pmc_base, tegra114_clks,
 				&pll_p_params);
 }
