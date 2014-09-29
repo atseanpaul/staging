@@ -482,10 +482,6 @@ static int tegra_output_dsi_enable(struct tegra_output *output)
 	value &= ~DSI_CONTROL_HOST_ENABLE;
 	tegra_dsi_writel(dsi, value, DSI_CONTROL);
 
-	err = tegra_dsi_set_phy_timing(dsi);
-	if (err < 0)
-		return err;
-
 	for (i = 0; i < NUM_PKT_SEQ; i++)
 		tegra_dsi_writel(dsi, pkt_seq[i], DSI_PKT_SEQ_0_LO + i);
 
@@ -659,6 +655,12 @@ static int tegra_output_dsi_setup_clock(struct tegra_output *output,
 
 	value = DSI_TALLY_TA(0) | DSI_TALLY_LRX(0) | DSI_TALLY_HTX(0);
 	tegra_dsi_writel(dsi, value, DSI_TO_TALLY);
+
+	err = tegra_dsi_set_phy_timing(dsi);
+	if (err) {
+		dev_err(dsi->dev, "failed to setup phy timing: %d\n", err);
+		return err;
+	}
 
 	return 0;
 }
